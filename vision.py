@@ -58,11 +58,18 @@ class Vision:
             picado = picado + 1
             cv.waitKey(100)
         if picado >= 100:
+            win32api.SetCursorPos((xPosIn,yPosIn))
+            xPos, yPos = pyautogui.position()
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,xPosIn,yPosIn,0,0)
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,xPosIn,yPosIn,0,0)
             keyboard.press("1")
             keyboard.release("1")
             cv.waitKey(3000)
         return rectangles
-
+            
+            
+            
+            
 
         def get_click_points(self, rectangles):
             points = []
