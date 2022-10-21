@@ -1,7 +1,7 @@
 import sys
 import core_functions as cf
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
 
 # Subclass QMainWindow to customize your application's main window
 class MainWindow(QMainWindow):
