@@ -3,17 +3,7 @@ import win32gui, win32ui, win32con
 
 class WindowCapture:
 
-    w = 0
-    h = 0
-    cropped_x = 0
-    cropped_y = 0
-    offset_x = 0
-    offset_y = 0
-    xPosIn = 0
-    yPosIn = 0
-    hwnd = None
-
-    def __init__(self, window_name = None, width = 0, height = 0, xPosIni = 0, yPosIni = 0):
+    def __init__(self, window_name = None, xPosIni = 0, yPosIni = 0, width = 0, height = 0, ):
 
         if window_name is None:
             self.hwnd = win32gui.GetDesktopWindow()
@@ -33,8 +23,8 @@ class WindowCapture:
         self.cropped_x = border_pixels
         self.cropped_y = titlebar_pixels
 
-        self.xPosIn = xPosIni
-        self.yPosIn = yPosIni
+        self.xPosIni = xPosIni
+        self.yPosIni = yPosIni
 
         self.offset_x = xPosIni + self.cropped_x
         self.offset_y = yPosIni + self.cropped_y
@@ -47,7 +37,7 @@ class WindowCapture:
         dataBitMap = win32ui.CreateBitmap()
         dataBitMap.CreateCompatibleBitmap(dcObj, self.w, self.h)
         cDC.SelectObject(dataBitMap)
-        cDC.BitBlt((0,0), (self.w, self.h), dcObj, (self.xPosIn, self.yPosIn), win32con.SRCCOPY)
+        cDC.BitBlt((0,0), (self.w, self.h), dcObj, (self.xPosIni, self.yPosIni), win32con.SRCCOPY)
         #Guarda la captura
         #dataBitMap.SaveBitmapFile(cDC, "debug.bmp")
         signedIntsArray = dataBitMap.GetBitmapBits(True)

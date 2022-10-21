@@ -5,18 +5,15 @@ import win32gui, win32ui, win32con, win32api
 from pynput.keyboard import Key, Controller
 import pyautogui
 
-keyboard = Controller()
-picado = 0
-lastXPos = 0
-lastYPos = 0
+
 
 class Vision:
 
     TRACKBAR_WINDOW = "Trackbars"
-    needle_img = None
-    needle_w = 0
-    needle_h = 0
-    method = None
+    picado = 0
+    lastXPos = 0
+    lastYPos = 0
+    keyboard = Controller()
 
     def __init__(self, needle_img_path, method=cv.TM_CCOEFF_NORMED):
         self.needle_img = cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
@@ -28,60 +25,49 @@ class Vision:
     def find(self, haystack_img, threshold = 0.5, xPosIn = 0, yPosIn = 0):
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
-        global picado
-        global lastXPos
-        global lastYPos
         locations = np.where(result >= threshold)
         locations = list(zip(*locations[::-1]))
-        puntero_x = 0
-        puntero_y = 0
         rectangles = []
         for loc in locations:
             rect = [int(loc[0]), int(loc[1]), self.needle_w, self.needle_h]
-            lastXPos = int(loc[0])
-            lastYPos = int(loc[1])
+            Vision.lastXPos = int(loc[0])
+            Vision.lastYPos = int(loc[1])
             rectangles.append(rect)
             rectangles.append(rect)
-            if picado >= 1:
+            if Vision.picado >= 1:
                 win32api.SetCursorPos((int(loc[0]+self.needle_w/2+xPosIn),int(loc[1]+self.needle_h/2+yPosIn)))
                 xPos, yPos = pyautogui.position()
                 win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,xPos,yPos,0,0)
                 win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,xPos,yPos,0,0)
                 cv.waitKey(1000)
-                keyboard.press("1")
-                keyboard.release("1")
+                Vision.keyboard.press("1")
+                Vision.keyboard.release("1")
                 cv.waitKey(3000)
-                picado = 0
+                Vision.picado = 0
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5)
-        print(rectangles)
         if not locations:
-            picado = picado + 1
+            Vision.picado = Vision.picado + 1
             cv.waitKey(100)
-        if picado >= 100:
+        if Vision.picado >= 100:
             win32api.SetCursorPos((xPosIn,yPosIn))
             xPos, yPos = pyautogui.position()
             win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,xPosIn,yPosIn,0,0)
             win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,xPosIn,yPosIn,0,0)
-            keyboard.press("1")
-            keyboard.release("1")
+            Vision.keyboard.press("1")
+            Vision.keyboard.release("1")
             cv.waitKey(3000)
         return rectangles
             
-            
-            
-            
-
-        def get_click_points(self, rectangles):
-            points = []
-            # Loop over all the rectangles
-            for (x, y, w, h) in rectangles:
-                # Determine the center position
-                center_x = x + int(w/2)
-                center_y = y + int(h/2)
-                # Save the points
-                points.append((center_x, center_y))
-
-            return points
+    def get_click_points(self, rectangles):
+        points = []
+        # Loop over all the rectangles
+        for (x, y, w, h) in rectangles:
+            # Determine the center position
+            center_x = x + int(w/2)
+            center_y = y + int(h/2)
+            # Save the points
+            points.append((center_x, center_y))
+        return points
 
     def draw_rectangles(self, haystack_img, rectangles):
     # these colors are actually BGR
