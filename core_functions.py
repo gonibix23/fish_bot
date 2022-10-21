@@ -43,7 +43,7 @@ class thread_with_trace(threading.Thread):
         while True:
             print('thread running')
 
-def getScreenPlace():
+def fishingSetup():
     dc = win32gui.GetDC(0)
     dcObj = win32ui.CreateDCFromHandle(dc)
     hwnd = win32gui.WindowFromPoint((0,0))
@@ -74,27 +74,27 @@ def getScreenPlace():
         time.sleep(0.001)
     redBoxThread = thread_with_trace(target = render_rectangle, args = (xPosIn, yPosIn, xPosFin, yPosFin))
     redBoxThread.start()
-    return [xPosIn, yPosIn, xPosFin, yPosFin, redBoxThread]
+    fishingThread = thread_with_trace(target = startFishing, args = (300 , xPosIn, yPosIn, xPosFin - xPosIn, yPosFin - yPosIn, redBoxThread))
+    fishingThread.start()
 
 def render_rectangle(xPosIn, yPosIn, xPosFin, yPosFin):
+    dc = win32gui.GetDC(0)
+    dcObj = win32ui.CreateDCFromHandle(dc)
+    hwnd = win32gui.WindowFromPoint((0,0))
+    monitor = (0, 0, win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1))
+    brush = win32ui.CreateBrush()
+    brush.CreateSolidBrush(255)
     while True:
-        dc = win32gui.GetDC(0)
-        dcObj = win32ui.CreateDCFromHandle(dc)
-        hwnd = win32gui.WindowFromPoint((0,0))
-        monitor = (0, 0, win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1))
-        brush = win32ui.CreateBrush()
-        brush.CreateSolidBrush(255)
         dcObj.FrameRect((xPosIn, yPosIn, xPosFin, yPosFin), brush)
         win32gui.InvalidateRect(hwnd, monitor, False) # Refresh the entire monitor
 
-def startFishing(bait_time = 300):
+def startFishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, redBoxThread = None):
     keyboard = Controller()
     vision_item = Vision("bait.jpg")
-    windowSize = getScreenPlace()
-    wincap = WindowCapture(None, windowSize[0], windowSize[1], windowSize[2] - windowSize[0], windowSize[3] - windowSize[1])
+    wincap = WindowCapture(None, xPos, yPos, width, height)
     loop_time = time.time()
     #cv.waitKey(3000)
-    #keyboard.press("2")
+    #keyboard.press("2")11
     #keyboard.release("2")
     #keyboard.press("1")
     #keyboard.release("1")
@@ -119,5 +119,4 @@ def startFishing(bait_time = 300):
             keyboard.press("1")
             keyboard.release("1")
     print("End")
-    windowSize[4].kill()
-
+    redBoxThread.kill()

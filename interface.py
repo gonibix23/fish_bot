@@ -18,8 +18,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(button)
 
 if __name__ == '__main__':
-    cf.startFishing()
-    #app = QApplication(sys.argv)
-    #window = MainWindow()
-    #window.show()
-    #app.exec()
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    app.exec()
