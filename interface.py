@@ -1,24 +1,18 @@
+# -*- coding: utf-8 -*-
+
+################################################################################
+## Form generated from reading UI file 'fish_botNTmmXZ.ui'
+##
+## Created by: Qt User Interface Compiler version 6.1.0
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+import core_functions as ct
 import sys
-import core_functions as cf
-from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
-
-# Subclass QMainWindow to customize your application's main window
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        self.setWindowTitle("Where is my water!")
-
-        button = QPushButton("Press Me!")
-
-        self.setFixedSize(QSize(800, 500))
-
-        # Set the central widget of the Window.
-        self.setCentralWidget(button)
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    app.exec()
+    pass

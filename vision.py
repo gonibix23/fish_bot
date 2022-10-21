@@ -5,8 +5,6 @@ import win32gui, win32ui, win32con, win32api
 from pynput.keyboard import Key, Controller
 import pyautogui
 
-
-
 class Vision:
 
     TRACKBAR_WINDOW = "Trackbars"
