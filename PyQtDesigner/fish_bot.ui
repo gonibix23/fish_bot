@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>683</width>
-    <height>607</height>
+    <width>692</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="font">
@@ -103,6 +103,79 @@
      </widget>
     </item>
     <item>
+     <widget class="QFrame" name="computer_usage">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="cpu_usage_perc_label">
+         <property name="text">
+          <string>CPU Usage(%)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="cpu_usage_perc_num">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="ram_usage_perc_label">
+         <property name="text">
+          <string>RAM Usage(%)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="ram_usage_perc_num">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="ram_usage_gb_label">
+         <property name="text">
+          <string>RAM Usage(GB)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="ram_usage_gb_num">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="refresh_button">
+         <property name="text">
+          <string>Refresh</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <widget class="QFrame" name="bot_creator_frame">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -138,11 +211,14 @@
           <property name="leftMargin">
            <number>0</number>
           </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
           <property name="rightMargin">
            <number>0</number>
           </property>
           <property name="bottomMargin">
-           <number>9</number>
+           <number>0</number>
           </property>
           <item>
            <widget class="QLineEdit" name="bot_key_field"/>
@@ -174,8 +250,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>661</width>
-            <height>505</height>
+            <width>670</width>
+            <height>450</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout"/>

@@ -4,14 +4,17 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from functools import partial
 import core_functions as cf
-import sys
+import sys, psutil, math
 
 class Ui_MainWindow(object):
+
+    usage = None
+
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-            self.sessions = []
-        MainWindow.resize(683, 607)
+        MainWindow.resize(692, 566)
+        self.sessions = []
         font = QFont()
         MainWindow.setFont(font)
         MainWindow.setCursor(QCursor(Qt.CrossCursor))
@@ -63,6 +66,48 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.inputs)
 
+        self.computer_usage = QFrame(self.centralwidget)
+        self.computer_usage.setObjectName(u"computer_usage")
+        self.computer_usage.setFrameShape(QFrame.StyledPanel)
+        self.computer_usage.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_3 = QHBoxLayout(self.computer_usage)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.cpu_usage_perc_label = QLabel(self.computer_usage)
+        self.cpu_usage_perc_label.setObjectName(u"cpu_usage_perc_label")
+
+        self.horizontalLayout_3.addWidget(self.cpu_usage_perc_label)
+
+        self.cpu_usage_perc_num = QLabel(self.computer_usage)
+        self.cpu_usage_perc_num.setObjectName(u"cpu_usage_perc_num")
+
+        self.horizontalLayout_3.addWidget(self.cpu_usage_perc_num)
+
+        self.ram_usage_perc_label = QLabel(self.computer_usage)
+        self.ram_usage_perc_label.setObjectName(u"ram_usage_perc_label")
+
+        self.horizontalLayout_3.addWidget(self.ram_usage_perc_label)
+
+        self.ram_usage_perc_num = QLabel(self.computer_usage)
+        self.ram_usage_perc_num.setObjectName(u"ram_usage_perc_num")
+
+        self.horizontalLayout_3.addWidget(self.ram_usage_perc_num)
+
+        self.ram_usage_gb_label = QLabel(self.computer_usage)
+        self.ram_usage_gb_label.setObjectName(u"ram_usage_gb_label")
+
+        self.horizontalLayout_3.addWidget(self.ram_usage_gb_label)
+
+        self.ram_usage_gb_num = QLabel(self.computer_usage)
+        self.ram_usage_gb_num.setObjectName(u"ram_usage_gb_num")
+
+        self.horizontalLayout_3.addWidget(self.ram_usage_gb_num)
+
+        Ui_MainWindow.usage = cf.thread_with_trace(target = self.update_usage)
+        Ui_MainWindow.usage.start()
+
+        self.verticalLayout_3.addWidget(self.computer_usage)
+
         self.bot_creator_frame = QFrame(self.centralwidget)
         self.bot_creator_frame.setObjectName(u"bot_creator_frame")
         self.bot_creator_frame.setFrameShape(QFrame.StyledPanel)
@@ -77,16 +122,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QHBoxLayout(self.bot_key_frame)
         self.horizontalLayout.setSpacing(8)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(0, -1, 0, 9)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.bot_key_field = QLineEdit(self.bot_key_frame)
         self.bot_key_field.setObjectName(u"bot_key_field")
 
         self.horizontalLayout.addWidget(self.bot_key_field)
 
-        self.bot_key_label = QLabel(self.bot_key_frame)
-        self.bot_key_label.setObjectName(u"bot_key_label")
+        self.boit_key_label = QLabel(self.bot_key_frame)
+        self.boit_key_label.setObjectName(u"boit_key_label")
 
-        self.horizontalLayout.addWidget(self.bot_key_label)
+        self.horizontalLayout.addWidget(self.boit_key_label)
 
         self.bot_create_button = QPushButton(self.bot_key_frame)
         self.bot_create_button.setObjectName(u"bot_create_button")
@@ -102,7 +147,7 @@ class Ui_MainWindow(object):
         self.bot_thread_list.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 661, 505))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 670, 450))
         self.gridLayout = QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout.setObjectName(u"gridLayout")
         self.bot_thread_list.setWidget(self.scrollAreaWidgetContents)
@@ -122,12 +167,18 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Where is my fish!", None))
         self.bait_time_label.setText(QCoreApplication.translate("MainWindow", u"Time between bait", None))
-        self.bait_time_field.setText("300")
+        self.bait_time_field.setText(QCoreApplication.translate("MainWindow", u"300", None))
         self.bait_key_label.setText(QCoreApplication.translate("MainWindow", u"Bait Key", None))
-        self.bait_key_field.setText("1")
+        self.bait_key_field.setText(QCoreApplication.translate("MainWindow", u"1", None))
         self.fish_key_label.setText(QCoreApplication.translate("MainWindow", u"Fish Key", None))
-        self.fish_key_field.setText("2")
-        self.bot_key_label.setText(QCoreApplication.translate("MainWindow", u"Bot Key", None))
+        self.fish_key_field.setText(QCoreApplication.translate("MainWindow", u"2", None))
+        self.cpu_usage_perc_label.setText(QCoreApplication.translate("MainWindow", u"CPU Usage(%)", None))
+        self.cpu_usage_perc_num.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.ram_usage_perc_label.setText(QCoreApplication.translate("MainWindow", u"RAM Usage(%)", None))
+        self.ram_usage_perc_num.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.ram_usage_gb_label.setText(QCoreApplication.translate("MainWindow", u"RAM Usage(GB)", None))
+        self.ram_usage_gb_num.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.boit_key_label.setText(QCoreApplication.translate("MainWindow", u"Bot Key", None))
         self.bot_create_button.setText(QCoreApplication.translate("MainWindow", u"Create New Bot Session", None))
     # retranslateUi
 
@@ -175,6 +226,13 @@ class Ui_MainWindow(object):
         session_thread[0].kill()
         session_thread[1].kill()
         bot_session.deleteLater()
+    
+    def update_usage(self):
+        while True:
+            self.cpu_usage_perc_num.setText(str(psutil.cpu_percent(4)))
+            self.ram_usage_perc_num.setText(str(psutil.virtual_memory()[2]))
+            self.ram_usage_gb_num.setText(str(round(psutil.virtual_memory()[3]/1000000000, 2)))
+            sleep(1)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -182,4 +240,6 @@ if __name__ == "__main__":
     ui_app = Ui_MainWindow()
     ui_app.setupUi(window)
     window.show()
-    sys.exit(app.exec())
+    app.exec()
+    Ui_MainWindow.usage.kill()
+    sys.exit()
