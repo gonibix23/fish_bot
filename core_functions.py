@@ -24,8 +24,6 @@ class thread_with_trace(threading.Thread):
         sys.settrace(self.globaltrace)
         if self._target is not None:
             self._return = self._target(*self._args, **self._kwargs)
-        self.__run_backup()
-        self.run = self.__run_backup
     
     def globaltrace(self, frame, event, arg):
         if event == 'call':
