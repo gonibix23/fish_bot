@@ -13,6 +13,7 @@ class thread_with_trace(threading.Thread):
     def __init__(self, *args, **keywords):
         threading.Thread.__init__(self, *args, **keywords)
         self.killed = False
+        self._return = None
  
     def start(self):
         self.__run_backup = self.run
@@ -21,6 +22,8 @@ class thread_with_trace(threading.Thread):
  
     def __run(self):
         sys.settrace(self.globaltrace)
+        if self._target is not None:
+            self._return = self._target(*self._args, **self._kwargs)
         self.__run_backup()
         self.run = self.__run_backup
     
@@ -39,16 +42,19 @@ class thread_with_trace(threading.Thread):
     def kill(self):
         self.killed = True
     
+    def join(self, *args):
+            threading.Thread.join(self, *args)
+            return self._return
+
     def func():
         while True:
             print('thread running')
 
-def fishingSetup():
+def fishing_setup():
     dc = win32gui.GetDC(0)
     dcObj = win32ui.CreateDCFromHandle(dc)
     hwnd = win32gui.WindowFromPoint((0,0))
     monitor = (0, 0, win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1))
-
     state_left = win32api.GetKeyState(0x01)  # Left button up = 0 or 1. Button down = -127 or -128
     done = False
     pressed = False
@@ -70,12 +76,12 @@ def fishingSetup():
             brush.CreateSolidBrush(255)
             dcObj.FrameRect((xPosIn, yPosIn, pyautogui.position().x, pyautogui.position().y), brush)
             win32gui.InvalidateRect(hwnd, monitor, False) # Refresh the entire monitor
-            
         time.sleep(0.001)
-    redBoxThread = thread_with_trace(target = render_rectangle, args = (xPosIn, yPosIn, xPosFin, yPosFin))
-    redBoxThread.start()
-    fishingThread = thread_with_trace(target = startFishing, args = (300 , xPosIn, yPosIn, xPosFin - xPosIn, yPosFin - yPosIn, redBoxThread))
-    fishingThread.start()
+    red_nox_thread = thread_with_trace(target = render_rectangle, args = (xPosIn, yPosIn, xPosFin, yPosFin))
+    red_nox_thread.start()
+    start_fishing_thread = thread_with_trace(target = start_fishing, args = (300 , xPosIn, yPosIn, xPosFin - xPosIn, yPosFin - yPosIn))
+    start_fishing_thread.start()
+    return [red_nox_thread, start_fishing_thread]
 
 def render_rectangle(xPosIn, yPosIn, xPosFin, yPosFin):
     dc = win32gui.GetDC(0)
@@ -88,7 +94,7 @@ def render_rectangle(xPosIn, yPosIn, xPosFin, yPosFin):
         dcObj.FrameRect((xPosIn, yPosIn, xPosFin, yPosFin), brush)
         win32gui.InvalidateRect(hwnd, monitor, False) # Refresh the entire monitor
 
-def startFishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, redBoxThread = None):
+def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, red_nox_thread = None):
     keyboard = Controller()
     vision_item = Vision("bait.jpg")
     wincap = WindowCapture(None, xPos, yPos, width, height)
@@ -103,7 +109,7 @@ def startFishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, red
         screenshot = wincap.get_screenshot()
         rectangles = vision_item.find(screenshot, 0.8,)
         output_image = vision_item.draw_rectangles(screenshot, rectangles)
-        cv.imshow("Paint", output_image)
+        #cv.imshow("Paint", output_image)
         loop_time = time.time()
         
         if cv.waitKey(1) == ord("g"):
@@ -119,4 +125,3 @@ def startFishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, red
             keyboard.press("1")
             keyboard.release("1")
     print("End")
-    redBoxThread.kill()
