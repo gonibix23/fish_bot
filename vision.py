@@ -1,8 +1,8 @@
 import cv2 as cv
 import numpy as np
 #from hsvfilter import HsvFilter 
-import win32gui, win32ui, win32con, win32api
-from pynput.keyboard import Key, Controller
+import win32con, win32api
+from pynput.keyboard import Controller
 import pyautogui
 
 class Vision:

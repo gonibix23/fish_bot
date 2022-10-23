@@ -4,7 +4,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from functools import partial
 import core_functions as cf
-import sys, psutil, math
+import sys, psutil
 
 class Ui_MainWindow(object):
 

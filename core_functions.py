@@ -1,4 +1,3 @@
-import cv2 as cv
 import time
 from windowcapture import WindowCapture
 from pynput.keyboard import Controller
