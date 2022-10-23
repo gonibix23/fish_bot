@@ -48,7 +48,7 @@ class thread_with_trace(threading.Thread):
         while True:
             print('thread running')
 
-def fishing_setup():
+def fishing_setup(bait_key = 1, fish_key = 2):
     dc = win32gui.GetDC(0)
     dcObj = win32ui.CreateDCFromHandle(dc)
     hwnd = win32gui.WindowFromPoint((0,0))
@@ -77,7 +77,7 @@ def fishing_setup():
         time.sleep(0.001)
     red_nox_thread = thread_with_trace(target = render_rectangle, args = (xPosIn, yPosIn, xPosFin, yPosFin))
     red_nox_thread.start()
-    start_fishing_thread = thread_with_trace(target = start_fishing, args = (300 , xPosIn, yPosIn, xPosFin - xPosIn, yPosFin - yPosIn))
+    start_fishing_thread = thread_with_trace(target = start_fishing, args = (300 , xPosIn, yPosIn, xPosFin - xPosIn, yPosFin - yPosIn, bait_key , fish_key))
     start_fishing_thread.start()
     return [red_nox_thread, start_fishing_thread]
 
@@ -92,7 +92,7 @@ def render_rectangle(xPosIn, yPosIn, xPosFin, yPosFin):
         dcObj.FrameRect((xPosIn, yPosIn, xPosFin, yPosFin), brush)
         win32gui.InvalidateRect(hwnd, monitor, False) # Refresh the entire monitor
 
-def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, red_nox_thread = None):
+def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, red_nox_thread = None, bait_key = 1, fish_key = 2):
     keyboard = Controller()
     vision_item = Vision("bait.jpg")
     wincap = WindowCapture(None, xPos, yPos, width, height)
@@ -109,17 +109,11 @@ def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, re
         output_image = vision_item.draw_rectangles(screenshot, rectangles)
         #cv.imshow("Paint", output_image)
         loop_time = time.time()
-        
-        if cv.waitKey(1) == ord("g"):
-            cv.destroyAllWindows()
-            break
-
         if loop_time%int(bait_time) < 2:
-            win32api.SetCursorPos(0, 0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,0,0,0,0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,0,0,0,0)
-            keyboard.press("2")
-            keyboard.release("2")
-            keyboard.press("1")
-            keyboard.release("1")
-    print("End")
+            win32api.SetCursorPos(xPos+width/2, yPos+height/2)
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, xPos+width/2, yPos+height/2, 0, 0)
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, xPos+width/2, yPos+height/2, 0, 0)
+            keyboard.press(str(bait_key))
+            keyboard.release(str(bait_key))
+            keyboard.press(str(fish_key))
+            keyboard.release(str(fish_key))

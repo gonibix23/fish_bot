@@ -7,11 +7,10 @@ import core_functions as cf
 import sys
 
 class Ui_MainWindow(object):
-
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        self.sessions = []
+            self.sessions = []
         MainWindow.resize(683, 607)
         font = QFont()
         MainWindow.setFont(font)
@@ -31,15 +30,35 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QHBoxLayout(self.inputs)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.bait_label = QLabel(self.inputs)
-        self.bait_label.setObjectName(u"bait_label")
+        self.bait_time_label = QLabel(self.inputs)
+        self.bait_time_label.setObjectName(u"bait_time_label")
 
-        self.horizontalLayout_2.addWidget(self.bait_label)
+        self.horizontalLayout_2.addWidget(self.bait_time_label)
 
-        self.bait_field = QLineEdit(self.inputs)
-        self.bait_field.setObjectName(u"bait_field")
+        self.bait_time_field = QLineEdit(self.inputs)
+        self.bait_time_field.setObjectName(u"bait_time_field")
 
-        self.horizontalLayout_2.addWidget(self.bait_field)
+        self.horizontalLayout_2.addWidget(self.bait_time_field)
+
+        self.bait_key_label = QLabel(self.inputs)
+        self.bait_key_label.setObjectName(u"bait_key_label")
+
+        self.horizontalLayout_2.addWidget(self.bait_key_label)
+
+        self.bait_key_field = QLineEdit(self.inputs)
+        self.bait_key_field.setObjectName(u"bait_key_field")
+
+        self.horizontalLayout_2.addWidget(self.bait_key_field)
+
+        self.fish_key_label = QLabel(self.inputs)
+        self.fish_key_label.setObjectName(u"fish_key_label")
+
+        self.horizontalLayout_2.addWidget(self.fish_key_label)
+
+        self.fish_key_field = QLineEdit(self.inputs)
+        self.fish_key_field.setObjectName(u"fish_key_field")
+
+        self.horizontalLayout_2.addWidget(self.fish_key_field)
 
 
         self.verticalLayout_3.addWidget(self.inputs)
@@ -64,10 +83,10 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.bot_key_field)
 
-        self.boit_key_label = QLabel(self.bot_key_frame)
-        self.boit_key_label.setObjectName(u"boit_key_label")
+        self.bot_key_label = QLabel(self.bot_key_frame)
+        self.bot_key_label.setObjectName(u"bot_key_label")
 
-        self.horizontalLayout.addWidget(self.boit_key_label)
+        self.horizontalLayout.addWidget(self.bot_key_label)
 
         self.bot_create_button = QPushButton(self.bot_key_frame)
         self.bot_create_button.setObjectName(u"bot_create_button")
@@ -86,7 +105,6 @@ class Ui_MainWindow(object):
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 661, 505))
         self.gridLayout = QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout.setObjectName(u"gridLayout")
-
         self.bot_thread_list.setWidget(self.scrollAreaWidgetContents)
 
         self.verticalLayout_2.addWidget(self.bot_thread_list)
@@ -103,8 +121,13 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Where is my fish!", None))
-        self.bait_label.setText(QCoreApplication.translate("MainWindow", u"Time between bait", None))
-        self.boit_key_label.setText(QCoreApplication.translate("MainWindow", u"Bot Key", None))
+        self.bait_time_label.setText(QCoreApplication.translate("MainWindow", u"Time between bait", None))
+        self.bait_time_field.setText("300")
+        self.bait_key_label.setText(QCoreApplication.translate("MainWindow", u"Bait Key", None))
+        self.bait_key_field.setText("1")
+        self.fish_key_label.setText(QCoreApplication.translate("MainWindow", u"Fish Key", None))
+        self.fish_key_field.setText("2")
+        self.bot_key_label.setText(QCoreApplication.translate("MainWindow", u"Bot Key", None))
         self.bot_create_button.setText(QCoreApplication.translate("MainWindow", u"Create New Bot Session", None))
     # retranslateUi
 
@@ -136,7 +159,7 @@ class Ui_MainWindow(object):
             closeSession = QPushButton(bot_session)
             closeSession.setObjectName(u"bot_session_"+str(len(self.sessions))+"_closeSession")
             closeSession.setText("Close Session")
-            session_thread = cf.thread_with_trace(target = cf.fishing_setup)
+            session_thread = cf.thread_with_trace(target = cf.fishing_setup, args = (self.bait_key_field.text(), self.fish_key_field.text()))
             session_thread.start()
             sessions_thread = session_thread.join()
             closeSession.clicked.connect(partial(self.close_session, bot_session, sessions_thread))

@@ -58,14 +58,46 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="bait_label">
+        <widget class="QLabel" name="bait_time_label">
          <property name="text">
           <string>Time between bait</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="bait_field"/>
+        <widget class="QLineEdit" name="bait_time_field">
+         <property name="text">
+          <string>300</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="bait_key_label">
+         <property name="text">
+          <string>Bait Key</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="bait_key_field">
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="fish_key_label">
+         <property name="text">
+          <string>Fish Key</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="fish_key_field">
+         <property name="text">
+          <string>2</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -146,19 +178,7 @@
             <height>505</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QFrame" name="bot_session_0">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_3"/>
-            </widget>
-           </item>
-          </layout>
+          <layout class="QGridLayout" name="gridLayout"/>
          </widget>
         </widget>
        </item>
