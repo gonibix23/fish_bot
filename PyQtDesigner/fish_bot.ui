@@ -165,13 +165,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="refresh_button">
-         <property name="text">
-          <string>Refresh</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
@@ -251,7 +244,7 @@
             <x>0</x>
             <y>0</y>
             <width>670</width>
-            <height>450</height>
+            <height>458</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout"/>
