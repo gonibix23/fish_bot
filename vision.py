@@ -44,7 +44,7 @@ class Vision:
                 Vision.picado = 0
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5)
         if not locations:
-            Vision.picado = Vision.picado + 1
+            Vision.picado += 1
             cv.waitKey(100)
         if Vision.picado >= 100:
             win32api.SetCursorPos((xPosIn,yPosIn))

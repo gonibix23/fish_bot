@@ -16,7 +16,6 @@ class thread_with_trace(threading.Thread):
         self._return = None
  
     def start(self):
-        self.__run_backup = self.run
         self.run = self.__run     
         threading.Thread.start(self)
  
@@ -98,21 +97,22 @@ def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, re
     wincap = WindowCapture(None, xPos, yPos, width, height)
     loop_time = time.time()
     #cv.waitKey(3000)
-    #keyboard.press("2")11
+    #keyboard.press("2")
     #keyboard.release("2")
     #keyboard.press("1")
     #keyboard.release("1")
-
+    middleX = int(xPos+width/2)
+    middleY = int(yPos+height/2)
     while(True):
         screenshot = wincap.get_screenshot()
-        rectangles = vision_item.find(screenshot, 0.8,)
-        output_image = vision_item.draw_rectangles(screenshot, rectangles)
+        rectangles = vision_item.find(screenshot, 0.8, middleX, middleY)
+        #output_image = vision_item.draw_rectangles(screenshot, rectangles)
         #cv.imshow("Paint", output_image)
         loop_time = time.time()
         if loop_time%int(bait_time) < 2:
-            win32api.SetCursorPos(xPos+width/2, yPos+height/2)
-            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, xPos+width/2, yPos+height/2, 0, 0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, xPos+width/2, yPos+height/2, 0, 0)
+            win32api.SetCursorPos((middleX, middleY))
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, middleX, middleY, 0, 0)
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, middleX, middleY, 0, 0)
             keyboard.press(str(bait_key))
             keyboard.release(str(bait_key))
             keyboard.press(str(fish_key))
