@@ -186,10 +186,9 @@ class Ui_MainWindow(object):
     def create_bot_session(self):
         if self.bot_key_field.text() == '1':
             bot_session = QFrame(self.scrollAreaWidgetContents)
-            bot_session.setObjectName(u"bot_session_"+str(len(self.sessions)))
+            bot_session.setObjectName(str(len(self.sessions)))
             bot_session.setFrameShape(QFrame.StyledPanel)
             bot_session.setFrameShadow(QFrame.Raised)
-
             horizontalLayout = QHBoxLayout(bot_session)
             horizontalLayout.setObjectName(u"bot_session_"+str(len(self.sessions))+"_horizontalLayout")
             horizontalLayout.setContentsMargins(0, -1, 0, 0)
@@ -213,18 +212,18 @@ class Ui_MainWindow(object):
             session_thread = cf.thread_with_trace(target = cf.fishing_setup, args = (self.bait_key_field.text(), self.fish_key_field.text()))
             session_thread.start()
             sessions_thread = session_thread.join()
-            closeSession.clicked.connect(partial(self.close_session, bot_session, sessions_thread))
+            closeSession.clicked.connect(partial(self.close_session, bot_session))
 
             horizontalLayout.addWidget(closeSession)
 
-            self.sessions.append(bot_session)
+            self.sessions.append([bot_session, sessions_thread])
 
             self.gridLayout.addWidget(bot_session, len(self.sessions), 0, 1, 1)
 
     @Slot()
-    def close_session(self, bot_session, session_thread):
-        session_thread[0].kill()
-        session_thread[1].kill()
+    def close_session(self, bot_session):
+        self.sessions[int(bot_session.objectName())][1][0].kill()
+        self.sessions[int(bot_session.objectName())][1][1].kill()
         bot_session.deleteLater()
     
     def update_usage(self):
