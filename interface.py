@@ -4,7 +4,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from functools import partial
 import core_functions as cf
-import sys, psutil
+import sys, psutil, datetime, pymongo
 
 class Ui_MainWindow(object):
 
@@ -131,10 +131,19 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setSpacing(8)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+
+        self.show_key_button = QPushButton(self.bot_key_frame)
+        self.show_key_button.setObjectName(u"show_key_button")
+        self.show_key_button.clicked.connect(self.show_key)
+
+        self.horizontalLayout.addWidget(self.show_key_button)
+
         self.bot_key_field = QLineEdit(self.bot_key_frame)
         self.bot_key_field.setObjectName(u"bot_key_field")
+        self.bot_key_field.setEchoMode(QLineEdit.Password)
 
         self.horizontalLayout.addWidget(self.bot_key_field)
+
 
         self.boit_key_label = QLabel(self.bot_key_frame)
         self.boit_key_label.setObjectName(u"boit_key_label")
@@ -188,12 +197,13 @@ class Ui_MainWindow(object):
         self.ram_usage_gb_label.setText(QCoreApplication.translate("MainWindow", u"RAM Usage(GB)", None))
         self.ram_usage_gb_num.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.boit_key_label.setText(QCoreApplication.translate("MainWindow", u"Bot Key", None))
+        self.show_key_button.setText(QCoreApplication.translate("MainWindow", u"Show Key", None))
         self.bot_create_button.setText(QCoreApplication.translate("MainWindow", u"Create New Bot Session", None))
     # retranslateUi
 
     @Slot()
     def create_bot_session(self):
-        if self.bot_key_field.text() == '1':
+        if self.check_connection():
             bot_session = QFrame(self.scrollAreaWidgetContents)
             bot_session.setObjectName(str(len(self.sessions)))
             bot_session.setFrameShape(QFrame.StyledPanel)
@@ -202,18 +212,11 @@ class Ui_MainWindow(object):
             horizontalLayout.setObjectName(u"bot_session_"+str(len(self.sessions))+"_horizontalLayout")
             horizontalLayout.setContentsMargins(0, -1, 0, 0)
 
-            lineEdit = QLineEdit(bot_session)
+            lineEdit = QLabel(bot_session)
             lineEdit.setObjectName(u"bot_session_"+str(len(self.sessions))+"_input")
-            lineEdit.setText(self.bot_key_field.text())
+            lineEdit.setText("Bot Session "+str(len(self.sessions))+" - "+str(datetime.datetime.now()))
 
             horizontalLayout.addWidget(lineEdit)
-
-            showKey = QPushButton(bot_session)
-            showKey.setObjectName(u"bot_session_"+str(len(self.sessions))+"_showKey")
-            showKey.setText("Show Key")
-            #showKey.clicked.connect(self.show_key)
-
-            horizontalLayout.addWidget(showKey)
 
             closeSession = QPushButton(bot_session)
             closeSession.setObjectName(u"bot_session_"+str(len(self.sessions))+"_closeSession")
@@ -245,6 +248,22 @@ class Ui_MainWindow(object):
     def browse_file(self):
         f_dialog = QFileDialog.getOpenFileName(QFileDialog(), "Select File", "C:/", "JPG Files (*.jpg *.jpge)")
         self.bait_file = f_dialog[0]
+
+    def show_key(self):
+        if self.bot_key_field.echoMode() == QLineEdit.Password:
+            self.bot_key_field.setEchoMode(QLineEdit.Normal)
+        else:
+            self.bot_key_field.setEchoMode(QLineEdit.Password)
+
+    def check_connection(self):
+        try:
+            log = pymongo.MongoClient("localhost:27017", username = "customer", password = "EWkpCLr!Ju!(ABqcexHCj@JHzY5mF68DQLtycH%wW%&Wz$r#PuT!XJbT@csawt9F", authSource="fish_bot", authMechanism='SCRAM-SHA-256').get_database("fish_bot").get_collection("keys").find({"key":str(self.bot_key_field.text())}).next()
+            if log["HWID"] == cf.GetUUID():
+                return True
+            else:
+                return False
+        except:
+            return False
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

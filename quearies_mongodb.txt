@@ -1,0 +1,26 @@
+db.keys.insertOne({username: "Gonibix", key:"*CsMVXPpIdSfW^+$MJaDjhkr7cvQdzS+", start_date:new Date(), end_date: new Date(), HWID: ""})
+db.keys.updateOne({key:"*CsMVXPpIdSfW^+$MJaDjhkr7cvQdzS+"}, [
+   { $set: { 
+      start_date: new Date(), 
+      end_date: {$dateFromParts: { 
+         'year' : { $year: new Date() }, 
+         'month' : {$add: [
+                     { $month: new Date()
+                     },
+                     1
+                  ]
+               }, 
+         'day': { $dayOfMonth: new Date()
+               }
+            }
+         } 
+      }
+   }
+])
+
+db.createUser(
+{
+	user: "customer",
+	pwd: "EWkpCLr!Ju!(ABqcexHCj@JHzY5mF68DQLtycH%wW%&Wz$r#PuT!XJbT@csawt9F",
+	roles:[{role: "read" , db:"fish_bot"}]
+})

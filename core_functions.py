@@ -116,3 +116,13 @@ def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, ba
             keyboard.release(str(bait_key))
             keyboard.press(str(fish_key))
             keyboard.release(str(fish_key))
+
+
+import subprocess
+
+def GetUUID():
+   cmd = 'wmic csproduct get uuid'
+   uuid = str(subprocess.check_output(cmd))
+   pos1 = uuid.find("\\n")+2
+   uuid = uuid[pos1:-15]
+   return uuid

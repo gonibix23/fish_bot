@@ -19,7 +19,6 @@ class Vision:
         self.needle_h = self.needle_img.shape[0]
         self.method = method
 
-
     def find(self, haystack_img, threshold = 0.5, xPosIn = 0, yPosIn = 0, bait_key = 1, fish_key = 2):
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
@@ -36,11 +35,11 @@ class Vision:
                 win32api.SetCursorPos((Vision.lastXPos, Vision.lastYPos))
                 win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,Vision.lastXPos,Vision.lastYPos,0,0)
                 win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,Vision.lastXPos,Vision.lastYPos,0,0)
+                win32api.SetCursorPos((xPosIn, yPosIn))
                 cv.waitKey(1000)
                 Vision.keyboard.press(str(fish_key))
                 Vision.keyboard.release(str(fish_key))
                 cv.waitKey(3000)
-                win32api.SetCursorPos((xPosIn, yPosIn))
                 Vision.picado = 0
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5)
         if not locations:
