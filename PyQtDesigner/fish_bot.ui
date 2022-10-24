@@ -99,6 +99,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="bait_file_button">
+         <property name="text">
+          <string>Bait File</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -244,7 +251,7 @@
             <x>0</x>
             <y>0</y>
             <width>670</width>
-            <height>458</height>
+            <height>456</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout"/>
