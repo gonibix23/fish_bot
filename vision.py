@@ -1,11 +1,9 @@
 import cv2 as cv
 import numpy as np
 #from hsvfilter import HsvFilter 
-import win32gui, win32ui, win32con, win32api
-from pynput.keyboard import Key, Controller
+import win32con, win32api
+from pynput.keyboard import Controller
 import pyautogui
-
-
 
 class Vision:
 
@@ -21,8 +19,7 @@ class Vision:
         self.needle_h = self.needle_img.shape[0]
         self.method = method
 
-
-    def find(self, haystack_img, threshold = 0.5, xPosIn = 0, yPosIn = 0):
+    def find(self, haystack_img, threshold = 0.5, xPosIn = 0, yPosIn = 0, bait_key = 1, fish_key = 2):
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
         locations = np.where(result >= threshold)
@@ -30,31 +27,31 @@ class Vision:
         rectangles = []
         for loc in locations:
             rect = [int(loc[0]), int(loc[1]), self.needle_w, self.needle_h]
-            Vision.lastXPos = int(loc[0])
-            Vision.lastYPos = int(loc[1])
+            Vision.lastXPos = int(loc[0]+self.needle_w/2+xPosIn)
+            Vision.lastYPos = int(loc[1]+self.needle_h/2+yPosIn)
             rectangles.append(rect)
             rectangles.append(rect)
             if Vision.picado >= 1:
-                win32api.SetCursorPos((int(loc[0]+self.needle_w/2+xPosIn),int(loc[1]+self.needle_h/2+yPosIn)))
-                xPos, yPos = pyautogui.position()
-                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,xPos,yPos,0,0)
-                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,xPos,yPos,0,0)
+                win32api.SetCursorPos((Vision.lastXPos, Vision.lastYPos))
+                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,Vision.lastXPos,Vision.lastYPos,0,0)
+                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,Vision.lastXPos,Vision.lastYPos,0,0)
+                win32api.SetCursorPos((xPosIn, yPosIn))
                 cv.waitKey(1000)
-                Vision.keyboard.press("1")
-                Vision.keyboard.release("1")
+                Vision.keyboard.press(str(fish_key))
+                Vision.keyboard.release(str(fish_key))
                 cv.waitKey(3000)
                 Vision.picado = 0
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5)
         if not locations:
-            Vision.picado = Vision.picado + 1
+            Vision.picado += 1
             cv.waitKey(100)
         if Vision.picado >= 100:
             win32api.SetCursorPos((xPosIn,yPosIn))
             xPos, yPos = pyautogui.position()
             win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,xPosIn,yPosIn,0,0)
             win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,xPosIn,yPosIn,0,0)
-            Vision.keyboard.press("1")
-            Vision.keyboard.release("1")
+            Vision.keyboard.press(str(fish_key))
+            Vision.keyboard.release(str(fish_key))
             cv.waitKey(3000)
         return rectangles
             

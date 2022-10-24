@@ -1,0 +1,2 @@
+py -m nuitka --onefile --disable-console --enable-plugin=pyside6 --enable-plugin=numpy ../interface.py
+py C:\Users\gonibix23\AppData\Local\Programs\Python\Python39\Lib\site-packages\PyInstaller ../interface.py --name fishpaint --windowed --icon=icon.ico --key="1jO93f3tG&fE4%N!"
