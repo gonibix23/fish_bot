@@ -4,6 +4,7 @@ import numpy as np
 import win32con, win32api
 from pynput.keyboard import Controller
 import pyautogui
+import random
 
 class Vision:
 
@@ -19,7 +20,7 @@ class Vision:
         self.needle_h = self.needle_img.shape[0]
         self.method = method
 
-    def find(self, haystack_img, threshold = 0.5, xPosIn = 0, yPosIn = 0, bait_key = 1, fish_key = 2):
+    def find(self, haystack_img, threshold = 0.5, xPosIn = 0, yPosIn = 0, fish_key = 2, fast_mode = True):
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
         locations = np.where(result >= threshold)
@@ -32,6 +33,8 @@ class Vision:
             rectangles.append(rect)
             rectangles.append(rect)
             if Vision.picado >= 1:
+                if(not fast_mode):
+                    cv.waitKey(random.randint(500,1500))
                 win32api.SetCursorPos((Vision.lastXPos, Vision.lastYPos))
                 win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN,Vision.lastXPos,Vision.lastYPos,0,0)
                 win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,Vision.lastXPos,Vision.lastYPos,0,0)

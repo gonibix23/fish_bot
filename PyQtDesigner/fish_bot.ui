@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>692</width>
-    <height>566</height>
+    <width>639</width>
+    <height>568</height>
    </rect>
   </property>
   <property name="font">
@@ -57,6 +57,13 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <widget class="QCheckBox" name="fast_mode_checkbox">
+         <property name="text">
+          <string>Fast Mode</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QLabel" name="bait_time_label">
          <property name="text">
@@ -172,6 +179,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="hwid_label">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -257,8 +271,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>670</width>
-            <height>456</height>
+            <width>617</width>
+            <height>458</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout"/>

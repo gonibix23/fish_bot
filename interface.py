@@ -36,6 +36,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QHBoxLayout(self.inputs)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+
+        self.fast_mode_checkbox = QCheckBox(self.inputs)
+        self.fast_mode_checkbox.setObjectName(u"fast_mode_checkbox")
+
+        self.horizontalLayout_2.addWidget(self.fast_mode_checkbox)
+
         self.bait_time_label = QLabel(self.inputs)
         self.bait_time_label.setObjectName(u"bait_time_label")
 
@@ -111,6 +117,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.ram_usage_gb_num)
 
+        self.hwid_label = QLabel(self.computer_usage)
+        self.hwid_label.setObjectName(u"hwid_label")
+        self.hwid_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+
+        self.horizontalLayout_3.addWidget(self.hwid_label)
+
         Ui_MainWindow.usage = cf.thread_with_trace(target = self.update_usage)
         Ui_MainWindow.usage.start()
 
@@ -183,6 +195,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Where is my fish!", None))
+        self.fast_mode_checkbox.setText(QCoreApplication.translate("MainWindow", u"Fast Mode", None))
         self.bait_time_label.setText(QCoreApplication.translate("MainWindow", u"Time between bait", None))
         self.bait_time_field.setText(QCoreApplication.translate("MainWindow", u"300", None))
         self.bait_key_label.setText(QCoreApplication.translate("MainWindow", u"Bait Key", None))
@@ -196,6 +209,7 @@ class Ui_MainWindow(object):
         self.ram_usage_perc_num.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.ram_usage_gb_label.setText(QCoreApplication.translate("MainWindow", u"RAM Usage(GB)", None))
         self.ram_usage_gb_num.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.hwid_label.setText(QCoreApplication.translate("MainWindow", u"HWID: "+cf.GetUUID(), None))
         self.boit_key_label.setText(QCoreApplication.translate("MainWindow", u"Bot Key", None))
         self.show_key_button.setText(QCoreApplication.translate("MainWindow", u"Show Key", None))
         self.bot_create_button.setText(QCoreApplication.translate("MainWindow", u"Create New Bot Session", None))
@@ -221,7 +235,7 @@ class Ui_MainWindow(object):
             closeSession = QPushButton(bot_session)
             closeSession.setObjectName(u"bot_session_"+str(len(self.sessions))+"_closeSession")
             closeSession.setText("Close Session")
-            session_thread = cf.thread_with_trace(target = cf.fishing_setup, args = (self.bait_key_field.text(), self.fish_key_field.text(), self.bait_file))
+            session_thread = cf.thread_with_trace(target = cf.fishing_setup, args = (self.bait_key_field.text(), self.fish_key_field.text(), self.bait_file, self.fast_mode_checkbox.isChecked()))
             session_thread.start()
             sessions_thread = session_thread.join()
             closeSession.clicked.connect(partial(self.close_session, bot_session))
