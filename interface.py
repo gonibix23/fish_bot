@@ -11,10 +11,13 @@ class Ui_MainWindow(object):
     usage = None
 
     def setupUi(self, MainWindow):
+
+        self.sessions = []
+        self.bait_file = "bait.jpg"
+
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(692, 566)
-        self.sessions = []
         font = QFont()
         MainWindow.setFont(font)
         MainWindow.setCursor(QCursor(Qt.CrossCursor))
@@ -63,6 +66,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.fish_key_field)
 
+        self.bait_file_button = QPushButton(self.inputs)
+        self.bait_file_button.setObjectName(u"bait_file_button")
+        self.bait_file_button.clicked.connect(self.browse_file)
+
+        self.horizontalLayout_2.addWidget(self.bait_file_button)
 
         self.verticalLayout_3.addWidget(self.inputs)
 
@@ -172,6 +180,7 @@ class Ui_MainWindow(object):
         self.bait_key_field.setText(QCoreApplication.translate("MainWindow", u"1", None))
         self.fish_key_label.setText(QCoreApplication.translate("MainWindow", u"Fish Key", None))
         self.fish_key_field.setText(QCoreApplication.translate("MainWindow", u"2", None))
+        self.bait_file_button.setText(QCoreApplication.translate("MainWindow", u"Bait File", None))
         self.cpu_usage_perc_label.setText(QCoreApplication.translate("MainWindow", u"CPU Usage(%)", None))
         self.cpu_usage_perc_num.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.ram_usage_perc_label.setText(QCoreApplication.translate("MainWindow", u"RAM Usage(%)", None))
@@ -209,7 +218,7 @@ class Ui_MainWindow(object):
             closeSession = QPushButton(bot_session)
             closeSession.setObjectName(u"bot_session_"+str(len(self.sessions))+"_closeSession")
             closeSession.setText("Close Session")
-            session_thread = cf.thread_with_trace(target = cf.fishing_setup, args = (self.bait_key_field.text(), self.fish_key_field.text()))
+            session_thread = cf.thread_with_trace(target = cf.fishing_setup, args = (self.bait_key_field.text(), self.fish_key_field.text(), self.bait_file))
             session_thread.start()
             sessions_thread = session_thread.join()
             closeSession.clicked.connect(partial(self.close_session, bot_session))
@@ -232,6 +241,10 @@ class Ui_MainWindow(object):
             self.ram_usage_perc_num.setText(str(psutil.virtual_memory()[2]))
             self.ram_usage_gb_num.setText(str(round(psutil.virtual_memory()[3]/1000000000, 2)))
             sleep(1)
+
+    def browse_file(self):
+        f_dialog = QFileDialog.getOpenFileName(QFileDialog(), "Select File", "C:/", "JPG Files (*.jpg *.jpge)")
+        self.bait_file = f_dialog[0]
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

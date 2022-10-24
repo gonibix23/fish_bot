@@ -6,7 +6,7 @@ import win32api
 import pyautogui
 import win32gui, win32ui, win32con, win32api
 import threading
-import sys
+import sys, cv2
 
 class thread_with_trace(threading.Thread):
     def __init__(self, *args, **keywords):
@@ -46,7 +46,7 @@ class thread_with_trace(threading.Thread):
         while True:
             print('thread running')
 
-def fishing_setup(bait_key = 1, fish_key = 2):
+def fishing_setup(bait_key = 1, fish_key = 2, bait_file = "bait.jpg"):
     dc = win32gui.GetDC(0)
     dcObj = win32ui.CreateDCFromHandle(dc)
     hwnd = win32gui.WindowFromPoint((0,0))
@@ -75,7 +75,7 @@ def fishing_setup(bait_key = 1, fish_key = 2):
         time.sleep(0.001)
     red_nox_thread = thread_with_trace(target = render_rectangle, args = (xPosIn, yPosIn, xPosFin, yPosFin))
     red_nox_thread.start()
-    start_fishing_thread = thread_with_trace(target = start_fishing, args = (300 , xPosIn, yPosIn, xPosFin - xPosIn, yPosFin - yPosIn, bait_key , fish_key))
+    start_fishing_thread = thread_with_trace(target = start_fishing, args = (300 , xPosIn, yPosIn, xPosFin - xPosIn, yPosFin - yPosIn, bait_key , fish_key, bait_file))
     start_fishing_thread.start()
     return [red_nox_thread, start_fishing_thread]
 
@@ -90,9 +90,9 @@ def render_rectangle(xPosIn, yPosIn, xPosFin, yPosFin):
         dcObj.FrameRect((xPosIn, yPosIn, xPosFin, yPosFin), brush)
         win32gui.InvalidateRect(hwnd, monitor, False) # Refresh the entire monitor
 
-def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, red_nox_thread = None, bait_key = 1, fish_key = 2):
+def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, bait_key = 1, fish_key = 2, bait_file = "bait.jpg"):
     keyboard = Controller()
-    vision_item = Vision("bait.jpg")
+    vision_item = Vision(bait_file)
     wincap = WindowCapture(None, xPos, yPos, width, height)
     loop_time = time.time()
     #cv.waitKey(3000)
@@ -104,9 +104,9 @@ def start_fishing(bait_time = 300, xPos = 0, yPos = 0, width = 0, height = 0, re
     middleY = int(yPos+height/2)
     while(True):
         screenshot = wincap.get_screenshot()
-        rectangles = vision_item.find(screenshot, 0.8, middleX, middleY)
+        rectangles = vision_item.find(screenshot, 0.7, xPos, yPos, bait_key = 1, fish_key = 2)
         #output_image = vision_item.draw_rectangles(screenshot, rectangles)
-        #cv.imshow("Paint", output_image)
+        #cv2.imshow("Paint", output_image)
         loop_time = time.time()
         if loop_time%int(bait_time) < 2:
             win32api.SetCursorPos((middleX, middleY))
