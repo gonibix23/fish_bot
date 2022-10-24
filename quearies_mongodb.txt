@@ -1,4 +1,4 @@
-db.keys.insertOne({username: "Gonibix", key:"*CsMVXPpIdSfW^+$MJaDjhkr7cvQdzS+", start_date:new Date(), end_date: new Date(), HWID: ""})
+db.keys.insertOne({username: "Gonibix", key:"&X5-)ktd78LkE@LI.&B7AIQo,#2H;VsiTH1pY+we15eF$I2j>m^H.uS678!c#La", start_date:new Date(), end_date: new Date(), HWID: ""})
 db.keys.updateOne({key:"*CsMVXPpIdSfW^+$MJaDjhkr7cvQdzS+"}, [
    { $set: { 
       start_date: new Date(), 
@@ -24,3 +24,5 @@ db.createUser(
 	pwd: "EWkpCLr!Ju!(ABqcexHCj@JHzY5mF68DQLtycH%wW%&Wz$r#PuT!XJbT@csawt9F",
 	roles:[{role: "read" , db:"fish_bot"}]
 })
+
+Claves de tipo 504-bit WPA Key
